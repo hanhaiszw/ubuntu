@@ -67,11 +67,8 @@ int main(int argc,char* argv[]){
      }
 
 
-
      //步骤4: 关闭socket
      close(sockfd);
-        
 
-
-    return 0;
+     return 0;
 }
