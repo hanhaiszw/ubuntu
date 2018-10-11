@@ -13,13 +13,10 @@ void copy(int fdin,int fdout){
     ssize_t size;
     while((size=read(fdin,buffer,BUFFER_LEN))>0){
         //查看当前偏移量
-
        // printf("read size: %ld\n",size);
-
        // printf("current: %ld\n",lseek(fdin,0L,SEEK_CUR));
 
         if(write(fdout,buffer,size)!=size){
-            
             fprintf(stderr,"read error:%s\n",strerror(errno));
             exit(1);
         }
@@ -28,7 +25,6 @@ void copy(int fdin,int fdout){
         fprintf(stderr,"read error:%s\n",strerror(errno));
         exit(1);
     }
-
 
 }
 

@@ -61,6 +61,7 @@ void do_service(int fd){
             break;  //一端关闭或者已经断开
         }else{
             printf("%s\n",buff);
+            //写时  如果对方已经关闭socket
             if(write_msg(fd,buff,sizeof(buff))<0){
                 
                 //读端关闭  再写时会发出EPIPE错误码信号
@@ -86,7 +87,7 @@ void out_fd(int fd){
     char ip[16];
     memset(ip, 0, sizeof(ip));
     int port = ntohs(addr.sin_port);
-    //网络字节序转化为主机字节序
+    //网络字节序转化为主机字节序  转化为点分十进制ip地址
     inet_ntop(AF_INET,&addr.sin_addr.s_addr, ip, sizeof(ip));
     printf("%16s(%5d) closed!\n",ip,port);
 }
@@ -119,7 +120,7 @@ int main(int argc,char* argv[]){
     //注:socket创建再内核中,是一个结构体
     //AF_INET:IPV4
     //SOCK_STREAM:tcp协议
-    sockfd=socket( AF_INET, SOCK_STREAM, 0);
+    sockfd = socket( AF_INET, SOCK_STREAM, 0);
     if(sockfd<0){
         perror("socket error");
         exit(1);

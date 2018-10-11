@@ -6,12 +6,11 @@
 #include <string.h>
 
 #include <stdio.h>
+//文件复制  示例程序
 int main(int argc,char *argv[]){
     if(argc!=3){
-        
         fprintf(stderr,"usage: %s srcfile dextfile\n",argv[0]);
         exit(1);
-
     }
     int fdin,fdout;
     //打开一个带读取的文件
@@ -43,7 +42,5 @@ int main(int argc,char *argv[]){
     close(fdin);
     close(fdout);
 
-
     return 0;
-
 }
