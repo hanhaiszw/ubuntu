@@ -13,6 +13,29 @@
     bin/time_udp_client 127.0.0.1 8888
 
 */
+
+int is_host(struct hostent *host, char *name){
+    if(!strcmp(host->h_name, name)) return 1;
+    int i=0;
+    while(host->h_aliases[i] != NULL){
+        if(!strcmp(host->h_aliases[i], name)) return 1;
+        i++;
+    }
+    return 0;
+}
+unsigned int get_ip_by_name(char* name){
+    unsigned int ip=0;
+    struct hostent *host;
+    while((host = gethostent()) != NULL){
+        if(is_host(host, name)){
+            //取出IP地址
+            memcpy(&ip, host->h_addr_list[0], 4);
+            break;
+        }    
+    }
+    endhostent();
+    return ip;
+}
 int main(int argc, char *argv[]){
     
     if(argc < 3){
@@ -33,7 +56,23 @@ int main(int argc, char *argv[]){
     memset(&serveraddr, 0, sizeof(serveraddr));
     serveraddr.sin_family = AF_INET; //ipv4
     serveraddr.sin_port = htons(atoi(argv[2]));//port;
-    inet_pton(AF_INET, argv[1], &serveraddr.sin_addr.s_addr); //ip
+    //1
+    //inet_pton(AF_INET, argv[1], &serveraddr.sin_addr.s_addr); //ip
+    //1
+
+
+
+    //2   返回的就是网络字节序ip
+    //根据域名获取IP地址
+    //如果不自己解析  则还是可以处理localhost的  其他的不行??? 
+    //经测试在/etc/hosts中其他的域名 也可以自动解析
+    unsigned int ip = get_ip_by_name(argv[1]);
+    if(ip !=0){
+        serveraddr.sin_addr.s_addr = ip;
+    }else{
+        inet_pton(AF_INET, argv[1], &serveraddr.sin_addr.s_addr); //ip
+    }
+    //2
 
     //udp中同样可以调用connect函数,和TCP中不同的是,udp的connect函数不会进行三次握手
     //udp中的connect函数只是在内核中记录了服务器的ip和port信息
