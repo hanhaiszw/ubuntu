@@ -20,7 +20,8 @@ void* th_fn(void* arg){
         usleep(r->time);
     }
     //pthread_exit((void*)0); //终止线程,返回0
-    return (void*)0;
+    //return (void*)0;
+    return (void*)(r->end - r->start);
 }
 
 int main(void){
@@ -36,8 +37,11 @@ int main(void){
         perror("pthread_create error");
     }
 
-    pthread_join(rabbit, NULL);//第二个参数用来接收线程函数的返回值
-    pthread_join(turtle, NULL);
+    int result;
+    pthread_join(rabbit, (void*)&result);//第二个参数用来接收线程函数的返回值
+    printf("rabbit distance is %d\n", result);
+    pthread_join(turtle, (void*)&result);
+    printf("turtle distance is %d\n", result);
 
     printf("control thread id: %lx\n", pthread_self());
     printf("finished\n");

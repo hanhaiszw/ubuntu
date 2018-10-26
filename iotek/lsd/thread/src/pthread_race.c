@@ -10,11 +10,11 @@ void* th_fn(void* arg){
     int i;
     for(i=1; i<distance; i++){
         printf("%lx run %d\n",pthread_self(), i);
-        int time = 500000;
+        int time = (int)(drand48() * 100000);
         usleep(time);
     }
 
-    return (void*)0;
+    return (void*)distance;
 }
 
 int main(void){
@@ -27,12 +27,18 @@ int main(void){
     }   
 
     //创建turtle线程
-    if((err = pthread_create(&turtle, NULL, th_fn, (void*)60)) != 0){
+    if((err = pthread_create(&turtle, NULL, th_fn, (void*)50)) != 0){
         perror("pthread_create error");
     }   
 
-    pthread_join(rabbit, NULL);
-    pthread_join(turtle, NULL);
+    //主控线程调用pthread_join()自己会阻塞
+    //直到rabbit和turtle线程运行结束方可运行
+    //调用pthread_join 线程执行完成后,线程占有的资源会自动释放
+    int result;
+    pthread_join(rabbit, (void*)&result);
+    printf("rabbit's distance is %d\n",result);
+    pthread_join(turtle, (void*)&result);
+    printf("turtle's distance is %d\n",result);
     //输出主控线程的id  这里使用十六进制值输出
     printf("control thread id: %lx\n", pthread_self());
     printf("finished!\n");

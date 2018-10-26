@@ -12,8 +12,8 @@ typedef struct
 void* th_fn(void* arg)
 {
     Arg* r =(Arg*)arg;
-    return (void*)(r->d1 + r->d2);
-
+    // return (void*)(r->d1 + r->d2);
+    return (void*)r;
 }
 
 int main(void){
@@ -27,6 +27,7 @@ int main(void){
 
     //获取线程函数返回结果
 
+    //接受一个整型值
     //1
     /*
     int *result;
@@ -35,9 +36,13 @@ int main(void){
     */
 
     //2
-    int result;
-    pthread_join(th,(void*)&result);
-    printf("result is %d\n",result);
+    //int result;
+    //pthread_join(th,(void*)&result);
+    //printf("result is %d\n",result);
 
+    //接受一个返回的结构体
+    int *result;
+    pthread_join(th, (void**)&result);
+    printf("result is %d\n", ((Arg*)result) -> d1 + ((Arg*)result) -> d2);
     return 0;
 }
